@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRM Visão Branca</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // DARK MODE THEME
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#0d1117', // GitHub dark background
+              surface: '#161b22',    // GitHub dark surface
+              primary: '#58a6ff',    // GitHub dark blue
+              secondary: '#3081f7',  // GitHub dark blue hover
+              text: '#c9d1d9',      // GitHub dark text
+              subtle: '#8b949e',     // GitHub dark subtle text
+              border: '#30363d',     // GitHub dark border
+              success: '#3FB950',    // Green
+              danger: '#F85149',     // Red
+              warning: '#F59E0B',    // Amber 500
+            },
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.4.1",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
+    "jspdf": "https://aistudiocdn.com/jspdf@^3.0.3",
+    "jspdf-autotable": "https://aistudiocdn.com/jspdf-autotable@^3.8.2",
+    "papaparse": "https://aistudiocdn.com/papaparse@^5.4.1",
+    "date-fns/": "https://aistudiocdn.com/date-fns@^4.1.0/",
+    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-background text-text">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    <!-- 
+      This app uses the following dependencies:
+      - react
+      - react-dom
+      - react-router-dom
+      - recharts
+      - lucide-react
+      - jspdf
+      - jspdf-autotable
+      - papaparse
+      - date-fns
+    -->
+  </body>
+</html>
