@@ -19,6 +19,7 @@ import Integracoes from './pages/Integracoes';
 import Configuracoes from './pages/Configuracoes';
 import Usuarios from './pages/Usuarios';
 import SuperAdmin from './pages/SuperAdmin';
+import Spinner from './components/ui/Spinner';
 
 const PrivateRoute = ({ children, roles }: { children: React.ReactNode, roles?: string[] }) => {
   const { user, loading } = useAuth();

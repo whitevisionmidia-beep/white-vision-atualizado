@@ -22,8 +22,14 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && 
-             (getUserData().role == 'admin' || getUserData().level == 'Admin');
+      return isAuthenticated() &&
+             (
+               getUserData().role == 'admin' ||
+               getUserData().level == 'Admin' ||
+               getUserData().role == 'superadmin' ||
+               getUserData().role == 'super_admin' ||
+               getUserData().level == 'SuperAdmin'
+             );
     }
 
     // Regras da Coleção de Usuários
