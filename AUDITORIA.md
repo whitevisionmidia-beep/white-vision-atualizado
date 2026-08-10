@@ -76,3 +76,10 @@ Não foi necessário criar `Spinner.tsx`, `SuperAdmin.tsx`, `Modal.tsx` etc. por
 ## Observação importante de segurança
 
 A chave `VITE_FIREBASE_API_KEY` pode aparecer no bundle de uma aplicação Firebase Web; ela não deve ser tratada como um segredo. O controle real de acesso deve continuar nas Firebase Security Rules. Nunca coloque service-account JSON, private keys ou credenciais administrativas em `VITE_*`.
+
+
+## Correção adicional após validação do deploy
+
+A primeira versão auditada ainda continha um cast `as User` em `services/api.ts` que mascarava objetos de vendedor sem `tenantId`. Isso foi corrigido nesta versão FINAL: o objeto agora inclui `tenantId` e `organizationName` explicitamente. Também foi confirmado que `pages/Propostas.tsx` importa `Spinner`.
+
+**Importante:** o erro da Vercel mostrado pelo usuário (`Cannot find module './pages/SuperAdmin'` e `Cannot find module './components/ui/Spinner'`) indica que o commit/repositório que a Vercel estava compilando não continha esses arquivos nos caminhos esperados. A versão FINAL deste ZIP contém ambos e deve ser enviada ao GitHub com a estrutura preservada.
