@@ -17,7 +17,8 @@
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^3.8.2",
     "papaparse": "^5.4.1",
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.1.0",
+    "firebase": "^12.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

@@ -18,21 +18,27 @@ import NotFound from './components/shared/NotFound';
 import Integracoes from './pages/Integracoes';
 import Configuracoes from './pages/Configuracoes';
 import Usuarios from './pages/Usuarios';
+import SuperAdmin from './pages/SuperAdmin';
+import Spinner from './components/ui/Spinner';
 
-const PrivateRoute = ({ children, roles }: { children: React.ReactElement, roles?: string[] }) => {
+const PrivateRoute = ({ children, roles }: { children: React.ReactNode, roles?: string[] }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
-     return <div className="flex items-center justify-center h-screen bg-background"><p className="text-primary">Loading...</p></div>;
+     return <div className="flex items-center justify-center h-screen bg-background"><Spinner size="lg" /></div>;
   }
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   if (roles && !roles.includes(user.level)) {
+    // SuperAdmin can access Admin routes
+    if (user.level === 'SuperAdmin' && roles.includes('Admin')) {
+      return <>{children}</>;
+    }
     return <Navigate to="/dashboard" replace />;
   }
-  return children;
+  return <>{children}</>;
 };
 
 const MainLayout = () => {
@@ -62,10 +68,11 @@ const AppRoutes = () => {
         <Route path="/tarefas" element={<Tarefas />} />
         <Route path="/comissoes" element={<Comissoes />} />
         
-        <Route path="/locais" element={<PrivateRoute roles={['Admin']}><Locais /></PrivateRoute>} />
-        <Route path="/usuarios" element={<PrivateRoute roles={['Admin']}><Usuarios /></PrivateRoute>} />
-        <Route path="/integracoes" element={<PrivateRoute roles={['Admin']}><Integracoes /></PrivateRoute>} />
-        <Route path="/configuracoes" element={<PrivateRoute roles={['Admin']}><Configuracoes /></PrivateRoute>} />
+        <Route path="/super-admin" element={<PrivateRoute roles={['SuperAdmin']}><SuperAdmin /></PrivateRoute>} />
+        <Route path="/locais" element={<PrivateRoute roles={['Admin', 'SuperAdmin']}><Locais /></PrivateRoute>} />
+        <Route path="/usuarios" element={<PrivateRoute roles={['Admin', 'SuperAdmin']}><Usuarios /></PrivateRoute>} />
+        <Route path="/integracoes" element={<PrivateRoute roles={['SuperAdmin']}><Integracoes /></PrivateRoute>} />
+        <Route path="/configuracoes" element={<PrivateRoute roles={['Admin', 'SuperAdmin']}><Configuracoes /></PrivateRoute>} />
         
         <Route path="*" element={<NotFound />} />
       </Route>

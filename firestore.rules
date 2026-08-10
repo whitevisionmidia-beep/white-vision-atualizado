@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Funções auxiliares de validação e segurança
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isSameTenant(resourceData) {
+      return isAuthenticated() && 
+             (resourceData.tenantId == getUserData().tenantId);
+    }
+
+    function isWritingMatchingTenant() {
+      return isAuthenticated() &&
+             request.resource.data.tenantId == getUserData().tenantId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             (getUserData().role == 'admin' || getUserData().level == 'Admin');
+    }
+
+    // Regras da Coleção de Usuários
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (resource.data.tenantId == getUserData().tenantId || isAdmin());
+      allow create, update: if isAuthenticated() && (request.auth.uid == userId || isAdmin()) && isWritingMatchingTenant();
+      allow delete: if isAdmin();
+    }
+
+    // Isola dados por tenant em coleções do CRM com validação de escrita
+    match /clientes/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && (isAdmin() || getUserData().level == 'Admin');
+    }
+
+    match /contratos/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && (isAdmin() || getUserData().level == 'Admin');
+    }
+
+    match /propostas/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data);
+    }
+
+    match /transacoes/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && isAdmin();
+    }
+
+    match /financeiro/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && isAdmin();
+    }
+
+    match /tarefas/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data);
+    }
+
+    match /comissoes/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && isAdmin();
+    }
+
+    match /locais/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data) && isAdmin();
+    }
+
+    match /notas/{id} {
+      allow read: if isAuthenticated() && isSameTenant(resource.data);
+      allow create, update: if isAuthenticated() && isWritingMatchingTenant();
+      allow delete: if isAuthenticated() && isSameTenant(resource.data);
+    }
+
+    match /settings/{id} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Logs de auditoria: Criação permitida, leitura só para Admin, nunca alterar/excluir
+    match /auditLogs/{id} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+  }
+}
